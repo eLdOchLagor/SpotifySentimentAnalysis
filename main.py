@@ -3,12 +3,16 @@ import os
 import base64
 from requests import post, get
 import json
+import lyricsgenius
+
+# Behöver installeras via pip: lyricsgenius, requests, dotenv
 
 load_dotenv()
 
-# Get these unique codes from dashboard
+# For api access
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
+genius_token = os.getenv("GENIUS_TOKEN")
 
 # Use client_id and client_secret to get temporary access token
 def get_token():
@@ -54,10 +58,30 @@ def get_songs_from_playlist(token, playlist_link):
     return json_result
 
 token = get_token()
-result = get_songs_from_playlist(token, "https://open.spotify.com/playlist/6GTsKH1x2qYJzAel3LcESW?si=73c0b446d1244498")
+result = get_songs_from_playlist(token, "https://open.spotify.com/playlist/7De8GpLvMldfe5DcPB5C5o?si=5df2a3c828ec4001")
+
+# Configure Genius
+genius = lyricsgenius.Genius(genius_token)
+genius.verbose = False # Turn off status messeges in console
+genius.remove_section_headers = True # Get rid of for example "[Chorus]" text
+
+all_lyrics = []
 
 # Visar namnet för alla låtar i spellistan
 for index, item in enumerate(result):
     track_name = item["track"]["name"]
-    print(f"Track {index + 1}: {track_name}")
     
+    song = genius.search_song(track_name)
+    
+    if song:
+        # Add the song's lyrics to the list
+        all_lyrics.append({"track": track_name, "lyrics": song.lyrics})
+        print(f"Lyrics fetched for '{track_name}'")
+    else:
+        print(f"Lyrics not found for '{track_name}'")
+
+# Save all the lyrics to a JSON file after the loop
+with open("lyrics.json", "w", encoding="utf-8") as json_file:
+    json.dump(all_lyrics, json_file, ensure_ascii=False, indent=4)
+
+print("All lyrics saved to lyrics.json")
