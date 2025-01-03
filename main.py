@@ -32,11 +32,13 @@ def get_token():
 def get_auth_header(token):
     return {"Authorization": "Bearer " + token}
 
+# Visar sig att sista delen av länken är playlistId, extraherar den
 def extract_playlist_id(playlist_link):
     if "playlist/" in playlist_link:
         return playlist_link.split("playlist/")[1].split("?")[0]
     return None
 
+# Returnerar alla items från spellistan
 def get_songs_from_playlist(token, playlist_link):
     playlist_id = extract_playlist_id(playlist_link)
 
@@ -54,6 +56,7 @@ def get_songs_from_playlist(token, playlist_link):
 token = get_token()
 result = get_songs_from_playlist(token, "https://open.spotify.com/playlist/6GTsKH1x2qYJzAel3LcESW?si=73c0b446d1244498")
 
+# Visar namnet för alla låtar i spellistan
 for index, item in enumerate(result):
     track_name = item["track"]["name"]
     print(f"Track {index + 1}: {track_name}")
