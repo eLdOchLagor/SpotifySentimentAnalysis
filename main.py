@@ -5,7 +5,7 @@ from requests import post, get
 import json
 import lyricsgenius
 
-# Behöver installeras via pip: lyricsgenius, requests, dotenv
+# Behöver installeras via pip: lyricsgenius, requests, python-dotenv
 
 load_dotenv()
 
@@ -61,7 +61,7 @@ token = get_token()
 result = get_songs_from_playlist(token, "https://open.spotify.com/playlist/7De8GpLvMldfe5DcPB5C5o?si=5df2a3c828ec4001")
 
 # Configure Genius
-genius = lyricsgenius.Genius(genius_token)
+genius = lyricsgenius.Genius(genius_token, timeout=30)
 genius.verbose = False # Turn off status messeges in console
 genius.remove_section_headers = True # Get rid of for example "[Chorus]" text
 
