@@ -6,6 +6,15 @@
   height: 100%;
 }
 
+p {
+  width: 800px;
+}
+
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 10px;
+}
+
 input[type="submit"] {
   background-color: #3d67d8;
   color: white;
@@ -26,7 +35,7 @@ input[type="text"] {
 }
 
 input[type="submit"]:hover {
-  background-color: #254396; /* Darker green on hover */
+  background-color: #254396;
 }
 
 form {
@@ -37,7 +46,7 @@ form {
 .trackContainer {
   background-color: gray;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   width: 800px;
   
