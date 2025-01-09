@@ -5,7 +5,7 @@ from requests import post, get
 import json
 import lyricsgenius
 
-# Behöver installeras via pip: lyricsgenius, requests, dotenv
+# Behöver installeras via pip: lyricsgenius, requests, python-dotenv, vaderSentiment
 
 load_dotenv()
 
@@ -43,7 +43,7 @@ def extract_playlist_id(playlist_link):
     return None
 
 # Returnerar alla items från spellistan
-def get_songs_from_playlist(token, playlist_link,number_of_songs):
+def get_songs_from_playlist(token, playlist_link,number_of_songs = 10):
     playlist_id = extract_playlist_id(playlist_link)
 
     if playlist_id == None:
@@ -88,7 +88,7 @@ def sentiment_scores(sentence):
     return sentiment_dict['compound']
 
 token = get_token()
-result = get_songs_from_playlist(token, "https://open.spotify.com/playlist/5LGIV5y28xtKrNV07jLDzr?si=927db9fe697947ee",12)
+result = get_songs_from_playlist(token, "https://open.spotify.com/playlist/5BbW1GFAuTgd6kEgQU8gzJ?si=ae587d334a5c4346")
 
 # Configure Genius
 genius = lyricsgenius.Genius(genius_token,timeout=30)
