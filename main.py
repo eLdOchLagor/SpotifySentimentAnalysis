@@ -4,6 +4,8 @@ import base64
 from requests import post, get
 import json
 import lyricsgenius
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from transformers import pipeline
 
 # Behöver installeras via pip: lyricsgenius, requests, python-dotenv, vaderSentiment
 
@@ -43,7 +45,7 @@ def extract_playlist_id(playlist_link):
     return None
 
 # Returnerar alla items från spellistan
-def get_songs_from_playlist(token, playlist_link,number_of_songs = 10):
+def get_songs_from_playlist(token, playlist_link,number_of_songs = 1):
     playlist_id = extract_playlist_id(playlist_link)
 
     if playlist_id == None:
@@ -58,8 +60,6 @@ def get_songs_from_playlist(token, playlist_link,number_of_songs = 10):
     return json_result
 
 #VADER
-# import SentimentIntensityAnalyzer class from vaderSentiment.vaderSentiment module.
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 # Function to print sentiments of the sentence.
 def sentiment_scores(sentence):
@@ -122,3 +122,6 @@ for item in all_lyrics:
 
 playlist_mood = playlist_mood/len(all_lyrics)
 print(playlist_mood)
+
+# Initialize BERT Sentiment Analysis
+bert = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
