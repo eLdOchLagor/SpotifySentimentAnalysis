@@ -6,6 +6,9 @@ import json
 import lyricsgenius
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from transformers import pipeline
+from sentence_transformers import SentenceTransformer
+from sklearn.cluster import DBSCAN
+import numpy as np
 
 # Behöver installeras via pip: lyricsgenius, requests, python-dotenv, vaderSentiment
 
@@ -45,7 +48,7 @@ def extract_playlist_id(playlist_link):
     return None
 
 # Returnerar alla items från spellistan
-def get_songs_from_playlist(token, playlist_link,number_of_songs = 1):
+def get_songs_from_playlist(token, playlist_link,number_of_songs = 20):
     playlist_id = extract_playlist_id(playlist_link)
 
     if playlist_id == None:
@@ -60,7 +63,6 @@ def get_songs_from_playlist(token, playlist_link,number_of_songs = 1):
     return json_result
 
 #VADER
-
 # Function to print sentiments of the sentence.
 def sentiment_scores(sentence):
 
@@ -87,8 +89,30 @@ def sentiment_scores(sentence):
         print("Neutral")
     return sentiment_dict['compound']
 
+def remove_repeated_sections_advanced(lyrics):
+    lines = [line.strip() for line in lyrics.split("\n") if line.strip()]
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    
+    # Embed lines
+    embeddings = model.encode(lines)
+    
+    # Cluster using DBSCAN
+    clustering = DBSCAN(eps=0.5, min_samples=2, metric='cosine').fit(embeddings)
+    cluster_labels = clustering.labels_
+    
+    # Keep only the first occurrence of each cluster
+    seen_clusters = set()
+    unique_lines = []
+    
+    for line, cluster in zip(lines, cluster_labels):
+        if cluster == -1 or cluster not in seen_clusters:
+            unique_lines.append(line)
+            seen_clusters.add(cluster)
+    
+    return "\n".join(unique_lines)
+
 token = get_token()
-result = get_songs_from_playlist(token, "https://open.spotify.com/playlist/5BbW1GFAuTgd6kEgQU8gzJ?si=ae587d334a5c4346")
+result = get_songs_from_playlist(token, "https://open.spotify.com/playlist/6GTsKH1x2qYJzAel3LcESW?si=13d4a1d361684328")
 
 # Configure Genius
 genius = lyricsgenius.Genius(genius_token,timeout=30)
@@ -116,12 +140,17 @@ with open("lyrics.json", "w", encoding="utf-8") as json_file:
 
 print("All lyrics saved to lyrics.json")
 
+# Initialize BERT Sentiment Analysis
+bert = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
+
 playlist_mood = 0
+vader_score = 0
 for item in all_lyrics:
-    playlist_mood += sentiment_scores(item["lyrics"])
+    lyrics_processed = remove_repeated_sections_advanced(item["lyrics"])
+    vader_score = sentiment_scores(lyrics_processed)
+    bert_result = bert(lyrics_processed)[0]
+    bert_score = bert_result["score"] if bert_result["label"] == "POSITIVE" else -bert_result["score"]
+    playlist_mood += 0*vader_score + 1*bert_score
 
 playlist_mood = playlist_mood/len(all_lyrics)
 print(playlist_mood)
-
-# Initialize BERT Sentiment Analysis
-bert = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
