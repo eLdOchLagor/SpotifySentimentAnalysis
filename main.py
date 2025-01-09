@@ -43,25 +43,55 @@ def extract_playlist_id(playlist_link):
     return None
 
 # Returnerar alla items från spellistan
-def get_songs_from_playlist(token, playlist_link):
+def get_songs_from_playlist(token, playlist_link,number_of_songs):
     playlist_id = extract_playlist_id(playlist_link)
 
     if playlist_id == None:
         print("Incorrect link")
         return None
     
-    url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+    url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks?limit={number_of_songs}"
     headers = get_auth_header(token)
     result = get(url, headers=headers)
     json_result = json.loads(result.content)["items"]
 
     return json_result
 
+#VADER
+# import SentimentIntensityAnalyzer class from vaderSentiment.vaderSentiment module.
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+
+# Function to print sentiments of the sentence.
+def sentiment_scores(sentence):
+
+    # Create a SentimentIntensityAnalyzer object.
+    sid_obj = SentimentIntensityAnalyzer()
+
+    # polarity_scores method of SentimentIntensityAnalyzer object gives a sentiment dictionary.
+    # which contains pos, neg, neu, and compound scores.
+    sentiment_dict = sid_obj.polarity_scores(sentence)
+    
+    print("Overall sentiment dictionary is : ", sentiment_dict)
+    print("Sentence was rated as ", sentiment_dict['neg']*100, "% Negative")
+    print("Sentence was rated as ", sentiment_dict['neu']*100, "% Neutral")
+    print("Sentence was rated as ", sentiment_dict['pos']*100, "% Positive")
+
+    print("Sentence Overall Rated As", end=" ")
+
+    # Decide sentiment as positive, negative, or neutral
+    if sentiment_dict['compound'] >= 0.05 :
+        print("Positive")
+    elif sentiment_dict['compound'] <= -0.05 :
+        print("Negative")
+    else :
+        print("Neutral")
+    return sentiment_dict['compound']
+
 token = get_token()
-result = get_songs_from_playlist(token, "https://open.spotify.com/playlist/7De8GpLvMldfe5DcPB5C5o?si=5df2a3c828ec4001")
+result = get_songs_from_playlist(token, "https://open.spotify.com/playlist/5LGIV5y28xtKrNV07jLDzr?si=927db9fe697947ee",12)
 
 # Configure Genius
-genius = lyricsgenius.Genius(genius_token)
+genius = lyricsgenius.Genius(genius_token,timeout=30)
 genius.verbose = False # Turn off status messeges in console
 genius.remove_section_headers = True # Get rid of for example "[Chorus]" text
 
@@ -85,3 +115,10 @@ with open("lyrics.json", "w", encoding="utf-8") as json_file:
     json.dump(all_lyrics, json_file, ensure_ascii=False, indent=4)
 
 print("All lyrics saved to lyrics.json")
+
+playlist_mood = 0
+for item in all_lyrics:
+    playlist_mood += sentiment_scores(item["lyrics"])
+
+playlist_mood = playlist_mood/len(all_lyrics)
+print(playlist_mood)
