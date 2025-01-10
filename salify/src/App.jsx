@@ -17,8 +17,11 @@ function App() {
     playlist_mood: null, // Total mood score of the playlist
   });
 
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
   const submitForm = async (e) => {
     e.preventDefault();
+    setButtonDisabled(true);
 
     const formData = new FormData(e.target);
     const payload = Object.fromEntries(formData);
@@ -28,6 +31,7 @@ function App() {
         input_value: payload.playlist_link,
       });
 
+      setButtonDisabled(false);
       setOutputValue(response.data.output_value);
     } catch (error) {
       console.error('Error:', error);
@@ -48,7 +52,7 @@ function App() {
 
         <form onSubmit={submitForm}>
           <input type="text" name='playlist_link' placeholder='Link to Spotify playlist'/>
-          <input type="submit" value="Analyse!"/>
+          <input type="submit" value="Analyse!" disabled={buttonDisabled}/>
         </form>
 
         <h2>{outputValue.playlist_mood}</h2>

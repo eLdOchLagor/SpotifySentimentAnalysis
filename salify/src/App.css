@@ -53,6 +53,11 @@ input[type="submit"]:hover {
   background-color: rgb(33, 33, 33);
 }
 
+input[type="submit"]:disabled {
+  cursor: default;
+  background-color: rgba(0, 0, 0, 0.483);
+}
+
 form {
   display: flex;
   gap: 5px;
