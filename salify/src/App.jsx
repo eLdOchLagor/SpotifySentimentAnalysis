@@ -3,6 +3,14 @@ import './App.css'
 import Track from "./Track"
 import axios from 'axios';
 
+// Hämta artist N 
+// Hämta bild N (optional)
+// Disable button while loading L
+// Styling N
+// Visualisering  L
+// Hosta frontend (optional)
+// Hosta backend (optional)
+
 
 function App() {
   const [outputValue, setOutputValue] = useState({
