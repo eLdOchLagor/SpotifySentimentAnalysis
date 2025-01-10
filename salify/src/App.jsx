@@ -1,23 +1,34 @@
 import { useState } from 'react'
 import './App.css'
 import Track from "./Track"
+import axios from 'axios';
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [outputValue, setOutputValue] = useState('');
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
     const payload = Object.fromEntries(formData);
 
-    console.log(payload.playlist_link)
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/process', {
+        input_value: payload.playlist_link,
+      });
+
+      setOutputValue(response.data.output_value);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
   };
 
   return (
     <>
       <div className='container'>
-        <h1>Salify</h1>
+        <h1>{outputValue}</h1>
         <h2>Sentiment analysis of public Spotify playlists</h2>
         <p>Enter the link to a public Spotify playlist and get a reading on how positive or negative it is based on the lyrics. See also how each song affects the reading in order to optimize the mood of your playlist to fit your liking</p>
 
