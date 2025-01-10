@@ -13,7 +13,7 @@ function Track(props) {
           </div>
         </div>
 
-        <h3>Sentiment score</h3>
+        <h3>{props.score}</h3>
       </div>
     </>
   )

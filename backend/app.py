@@ -92,12 +92,6 @@ genius = lyricsgenius.Genius(genius_token,timeout=30)
 genius.verbose = False # Turn off status messeges in console
 genius.remove_section_headers = True # Get rid of for example "[Chorus]" text
 
-all_lyrics = []
-
-# Save all the lyrics to a JSON file after the loop
-with open("lyrics.json", "w", encoding="utf-8") as json_file:
-    json.dump(all_lyrics, json_file, ensure_ascii=False, indent=4)
-
 # Initialize BERT Sentiment Analysis
 bert = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
 
@@ -120,8 +114,10 @@ def process_input():
 def process(input_value):
     result = get_songs_from_playlist(token, input_value, 5)
 
-    
-# Visar namnet för alla låtar i spellistan
+    all_lyrics = []
+    track_scores = []
+
+    # Visar namnet för alla låtar i spellistan
     for item in result:
         track_name = item["track"]["name"]
     
@@ -140,8 +136,12 @@ def process(input_value):
         bert_result = bert(lyrics_processed)[0]
         bert_score = bert_result["score"] if bert_result["label"] == "POSITIVE" else -bert_result["score"]
         playlist_mood += bert_score
+
+        track_scores.append({"track": item["track"], "score": bert_score})
+
     playlist_mood = playlist_mood/len(all_lyrics)
-    return playlist_mood
+    
+    return {"track_scores": track_scores, "playlist_mood": playlist_mood}
 
 if __name__ == '__main__':
     app.run(debug=True)

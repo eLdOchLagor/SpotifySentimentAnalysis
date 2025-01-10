@@ -5,7 +5,10 @@ import axios from 'axios';
 
 
 function App() {
-  const [outputValue, setOutputValue] = useState('');
+  const [outputValue, setOutputValue] = useState({
+    track_scores: [], // Array to hold track names and their BERT scores
+    playlist_mood: null, // Total mood score of the playlist
+  });
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -25,10 +28,14 @@ function App() {
 
   };
 
+  const allTracks = outputValue.track_scores.map((track, index) => 
+    <Track key={index} score={track.score} title={track.track} artist={"Kent"} imgSrc={"https://upload.wikimedia.org/wikipedia/en/a/ad/Kentverkligen.jpg"}/>
+  );
+
   return (
     <>
       <div className='container'>
-        <h1>{outputValue}</h1>
+        <h1>Salify</h1>
         <h2>Sentiment analysis of public Spotify playlists</h2>
         <p>Enter the link to a public Spotify playlist and get a reading on how positive or negative it is based on the lyrics. See also how each song affects the reading in order to optimize the mood of your playlist to fit your liking</p>
 
@@ -37,9 +44,10 @@ function App() {
           <input type="submit" value="Analyse!"/>
         </form>
 
+        <h2>{outputValue.playlist_mood}</h2>
+
         <div className='resultsContainer'>
-          <Track title={"Kräm (så nära får ingen gå)"} artist={"Kent"} imgSrc={"https://upload.wikimedia.org/wikipedia/en/a/ad/Kentverkligen.jpg"}/>
-          <Track title={"VinterNoll2"} artist={"Kent"} imgSrc={"https://upload.wikimedia.org/wikipedia/en/3/35/Kent-VinterNoll2.jpg"}/>
+          {allTracks}
         </div>
         
       </div>
