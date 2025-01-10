@@ -3,7 +3,6 @@ import './App.css'
 import Track from "./Track"
 import axios from 'axios';
 
-// Hämta artist N 
 // Hämta bild N (optional)
 // Disable button while loading L
 // Styling N
@@ -37,7 +36,7 @@ function App() {
   };
 
   const allTracks = outputValue.track_scores.map((track, index) => 
-    <Track key={index} score={track.score} title={track.track} artist={"Kent"} imgSrc={"https://upload.wikimedia.org/wikipedia/en/a/ad/Kentverkligen.jpg"}/>
+    <Track key={index} score={track.score} title={track.track} artist={"By: " + track.artist} imgSrc={track.artist_im_url}/>
   );
 
   return (

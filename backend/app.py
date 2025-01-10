@@ -60,6 +60,18 @@ def get_songs_from_playlist(token, playlist_link,number_of_songs = 20):
 
     return json_result
 
+def get_artist_image_by_name(token,artist_name):
+    url = f"https://api.spotify.com/v1/search?q={artist_name}&type=artist"
+    headers = get_auth_header(token)
+    result = get(url, headers=headers)
+    search_results = result.json()
+    artist_id = search_results['artists']['items'][0]['id']
+    artist_url = f"https://api.spotify.com/v1/artists/{artist_id}"
+    artist_response = get(artist_url, headers=headers)
+    artist_data = artist_response.json()
+    artist_images = artist_data['images']
+    largest_image_url = artist_images[0]['url']
+    return largest_image_url
 
 def remove_repeated_sections_advanced(lyrics):
     lines = [line.strip() for line in lyrics.split("\n") if line.strip()]
@@ -122,10 +134,11 @@ def process(input_value):
         track_name = item["track"]["name"]
     
         song = genius.search_song(track_name)
-    
+        artist = item["track"]["artists"][0]["name"]
+        artist_im_url = get_artist_image_by_name(token,artist)
         if song:
             # Add the song's lyrics to the list
-            all_lyrics.append({"track": track_name, "lyrics": song.lyrics})
+            all_lyrics.append({"track": track_name, "lyrics": song.lyrics, "artist": artist, "artist_im_url":  artist_im_url})
             print(f"Lyrics fetched for '{track_name}'")
         else:
             print(f"Lyrics not found for '{track_name}'")
@@ -137,7 +150,7 @@ def process(input_value):
         bert_score = bert_result["score"] if bert_result["label"] == "POSITIVE" else -bert_result["score"]
         playlist_mood += bert_score
 
-        track_scores.append({"track": item["track"], "score": bert_score})
+        track_scores.append({"track": item["track"], "score": bert_score, "artist": item["artist"], "artist_im_url":  item["artist_im_url"]})
 
     playlist_mood = playlist_mood/len(all_lyrics)
     
