@@ -1,3 +1,4 @@
+from math import ceil
 from dotenv import load_dotenv
 import os
 import base64
@@ -146,11 +147,20 @@ def process(input_value):
     playlist_mood = 0
     for item in all_lyrics:
         lyrics_processed = remove_repeated_sections_advanced(item["lyrics"])
-        bert_result = bert(lyrics_processed)[0]
-        bert_score = bert_result["score"] if bert_result["label"] == "POSITIVE" else -bert_result["score"]
-        playlist_mood += bert_score
 
-        track_scores.append({"track": item["track"], "score": bert_score, "artist": item["artist"], "artist_im_url":  item["artist_im_url"]})
+        # Divide the lyrics into multiple chunks if the lyrics exceeds 512 words
+        parts = [lyrics_processed[i:i+512] for i in range(0, len(lyrics_processed), 512)]
+
+        totalBertScore = 0
+        for part in parts:
+            bert_result = bert(part)[0]
+            bert_score = bert_result["score"] if bert_result["label"] == "POSITIVE" else -bert_result["score"]
+            totalBertScore += bert_score
+        totalBertScore /= len(parts)
+
+        playlist_mood += totalBertScore
+
+        track_scores.append({"track": item["track"], "score": totalBertScore, "artist": item["artist"], "artist_im_url":  item["artist_im_url"]})
 
     playlist_mood = playlist_mood/len(all_lyrics)
     
