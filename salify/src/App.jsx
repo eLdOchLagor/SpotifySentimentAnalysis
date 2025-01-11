@@ -3,6 +3,7 @@ import './App.css'
 import Track from "./Track"
 import axios from 'axios';
 import loadingIcon from "./assets/loading.svg"
+import VisualizeScore from "./VisualizeScore"
 
 // Hämta bild N (optional)
 // Disable button while loading L
@@ -62,15 +63,20 @@ function App() {
           <input type="submit" value="Analyse!" disabled={buttonDisabled}/>
         </form>
 
-        <h2>{outputValue.playlist_mood}</h2>
+        {outputValue.playlist_mood && (
+          <> 
+            <h2>Playlist Sentiment: {outputValue.playlist_mood}</h2>
+            <VisualizeScore score={outputValue.playlist_mood} width={400}/>
+          </>
+        )}
 
+        {buttonDisabled && (
+          <img src={loadingIcon} alt="loading" style={{width: "100px", marginTop: "10vh"}}/>
+        )};
+      
         <div className='resultsContainer'>
           {allTracks}
         </div>
-
-        {buttonDisabled && (
-          <img src={loadingIcon} alt="loading" style={{width: "100px"}}/>
-        )};
         
       </div>
     </>

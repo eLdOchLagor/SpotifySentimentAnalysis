@@ -1,4 +1,5 @@
 import './App.css'
+import VisualizeScore from "./VisualizeScore"
 
 function Track(props) {
 
@@ -12,8 +13,10 @@ function Track(props) {
             <h3>{props.artist}</h3>
           </div>
         </div>
-
-        <h3>{props.score}</h3>
+        <div>
+          <h3>{props.score}</h3>
+          <VisualizeScore score={props.score} width={200}/>
+        </div>
       </div>
     </>
   )

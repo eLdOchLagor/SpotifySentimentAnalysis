@@ -88,3 +88,21 @@ form {
   margin-top: 5vh;
   margin-bottom: 5vh;
 }
+
+.visualizeContainer {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, rgb(255, 0, 0), rgb(0, 255, 0));
+  width: 400px;
+  height: 20px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.visualizePoint {
+  width: 5px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: black;
+  position: absolute;
+}
