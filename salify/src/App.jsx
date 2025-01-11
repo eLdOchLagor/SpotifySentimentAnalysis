@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import Track from "./Track"
 import axios from 'axios';
+import loadingIcon from "./assets/loading.svg"
 
 // Hämta bild N (optional)
 // Disable button while loading L
@@ -22,6 +23,12 @@ function App() {
   const submitForm = async (e) => {
     e.preventDefault();
     setButtonDisabled(true);
+
+    // Empty it if there already exists tracks
+    setOutputValue({
+      track_scores: [],
+      playlist_mood: null,
+    });
 
     const formData = new FormData(e.target);
     const payload = Object.fromEntries(formData);
@@ -60,6 +67,10 @@ function App() {
         <div className='resultsContainer'>
           {allTracks}
         </div>
+
+        {buttonDisabled && (
+          <img src={loadingIcon} alt="loading" style={{width: "100px"}}/>
+        )};
         
       </div>
     </>
