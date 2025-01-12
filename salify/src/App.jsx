@@ -72,7 +72,7 @@ function App() {
 
         {buttonDisabled && (
           <img src={loadingIcon} alt="loading" style={{width: "100px", marginTop: "10vh"}}/>
-        )};
+        )}
       
         <div className='resultsContainer'>
           {allTracks}
