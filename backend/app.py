@@ -113,7 +113,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 app = Flask(__name__)
 
-allowed_origins = ["http://localhost:5173", "https://salifyme.vercel.app/"]
+allowed_origins = ["http://localhost:5173", "https://salifyme.vercel.app"]
 
 CORS(app, resources={r"/*": {"origins": allowed_origins}})
 
