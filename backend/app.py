@@ -112,7 +112,10 @@ bert = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-s
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+
+allowed_origins = ["http://localhost:5173", "https://salifyme.vercel.app/"]
+
+CORS(app, resources={r"/*": {"origins": allowed_origins}})
 
 @app.route('/process', methods=['POST'])
 def process_input():
