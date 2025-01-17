@@ -35,7 +35,7 @@ function App() {
     const payload = Object.fromEntries(formData);
 
     try {
-      const response = await axios.post('http://127.0.0.1:5000/process', {
+      const response = await axios.post('https://spotifysentimentanalysis.onrender.com/process', {
         input_value: payload.playlist_link,
       });
 
