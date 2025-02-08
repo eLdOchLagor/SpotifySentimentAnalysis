@@ -1,6 +1,6 @@
 
 # Sentiment Analysis of Public Spotify Playlists
-<img src="https://github.com/user-attachments/assets/bf71ae8c-b4d4-4918-8768-cd1a45f06d49" alt="Alt Text" width="300px">
+<img src="https://github.com/user-attachments/assets/bf71ae8c-b4d4-4918-8768-cd1a45f06d49" alt="Alt Text" width="600px">
 
 This project was created as part of the course TNM108 at LIU. The program was written by two people using Python, Flask and ReactJS.
 
