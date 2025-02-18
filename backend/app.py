@@ -8,6 +8,7 @@ import lyricsgenius
 from transformers import pipeline
 from sentence_transformers import SentenceTransformer
 from sklearn.cluster import DBSCAN
+from vaderSentiment import SentimentIntensityAnalyzer
 
 # Behöver installeras via pip: lyricsgenius, requests, python-dotenv, vaderSentiment
 

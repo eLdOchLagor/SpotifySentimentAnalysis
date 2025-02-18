@@ -35,7 +35,13 @@ function App() {
     const payload = Object.fromEntries(formData);
 
     try {
+      /*
       const response = await axios.post('https://spotifysentimentanalysis.onrender.com/process', {
+        input_value: payload.playlist_link,
+      });
+      */
+
+      const response = await axios.post('http://127.0.0.1:5000/process', {
         input_value: payload.playlist_link,
       });
 
@@ -48,7 +54,7 @@ function App() {
   };
 
   const allTracks = outputValue.track_scores.map((track, index) => 
-    <Track key={index} score={track.score} title={track.track} artist={"By: " + track.artist} imgSrc={track.artist_im_url}/>
+    <Track key={index} score={track.score.toFixed(3)} title={track.track} artist={"By: " + track.artist} imgSrc={track.artist_im_url}/>
   );
 
   return (
@@ -65,7 +71,7 @@ function App() {
 
         {outputValue.playlist_mood && (
           <> 
-            <h2>Playlist Sentiment: {outputValue.playlist_mood}</h2>
+            <h2>Playlist Sentiment: {outputValue.playlist_mood.toFixed(3)}</h2>
             <VisualizeScore score={outputValue.playlist_mood} width={400}/>
           </>
         )}
